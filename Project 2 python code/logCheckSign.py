@@ -7,7 +7,7 @@ class loginChecks:
     """logs user into the program or signs them up"""
     
               
-    def checkLogin(username,password):
+    def checkLogin(username,password,log):
         """Checks to see if username and password match"""
         #current time
         username=username.lower()
@@ -23,19 +23,20 @@ class loginChecks:
         
         if username in data["usernames"].keys() and password==data["usernames"][username][2]:
                #logs event
-               data['logs'].append("User name "+username+" logged in "+"at: "+time)
+               if(log==1):
+                 data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+username+" logged in "+"at: "+time
                with open("AppData.json","w") as out:
                  json.dump(data,out)
                return True
         else:
-              data['logs'].append("User name "+username+" failed to log in "+"at: "+time)
+              data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" failed to log in "+"at: "+str(time)
+              data['orderID']+=1
               with open("AppData.json","w") as out:
                json.dump(data,out)
               return False
     def sign(username,first,last,password):
          username=username.lower()
          """Signs up user"""
-         time= datetime.now()
          #current time
          time= datetime.now()
          time = time.strftime("%H:%M:%S")
@@ -53,7 +54,7 @@ class loginChecks:
             
          elif last.isalpha()==False:
             check=3    
-         elif len(password)<6:
+         elif len(password)<0:
             check=4
          
          if check==0:
@@ -64,13 +65,14 @@ class loginChecks:
              arr.append(password)
              data['usernames'][username]=arr
              #logs event
-             data['logs'].append("User name "+username+" is registered "+"at: "+time)
+             data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" was registered "+"at: "+str(time)
+             data['orderID']+=1
              with open("AppData.json","w") as out:
               json.dump(data,out)
 
              return 0
          else:
-             data['logs'].append("User name "+username+" failed to register "+"at: "+time)
+             data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" failed to register "+"at: "+str(time)
              with open("AppData.json","w") as out:
               json.dump(data,out)
              return check
