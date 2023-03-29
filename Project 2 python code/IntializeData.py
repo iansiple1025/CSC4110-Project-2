@@ -1,15 +1,13 @@
-import json, os
-
-main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
-
+import json
+import StockAndPrices
 #creates json file for the app
-with open(os.path.join(main_path, "AppData.json"),'r') as openfile:
+with open('AppData.json','r') as openfile:
    Database=json.load(openfile)
 
 sale=[0,""]
 logFiles={}
 #logFiles=[]
-hotsales=[0,0,0,0,0]
+hot=[0,0,0,0,0]
 Database={}
 users={}
 price={}
@@ -19,7 +17,7 @@ Database["orderID"]=10000
 Database["regular"]=200
 Database["expresso"]=200 
 Database["milk"]=10      
-Database["suger"]=100
+Database["sugar"]=100
 Database["cocoa"]=200
 Database["creamer"]=100
 
@@ -29,7 +27,7 @@ Database["cost"]=0
 
 #sale info
 Database["current"]=sale
-Database['hotSales']=hotsales
+Database['hotSeller']=hot
 Database["usernames"]=users
 Database["logs"]=logFiles
 
@@ -43,5 +41,8 @@ Database["prices"]=price
 
 
 #reads the file user requested
-with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
+with open("AppData.json","w") as out:
     json.dump(Database,out)
+
+
+

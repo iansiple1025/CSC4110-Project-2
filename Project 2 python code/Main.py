@@ -1,13 +1,12 @@
 import tkinter as tk
-import json, os
+import json
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from PIL import Image,ImageTk
 from logCheckSign import loginChecks
 from TakeOrder import TakeOrders
-
-main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+from StockAndPrices import inventory
 
 class App(tk.Tk):
     def __init__(self):
@@ -20,8 +19,7 @@ class App(tk.Tk):
         self.geometry("800x600")
         self.configure(bg="#EEEEE8")
         #logo
-        
-        self.logo=ImageTk.PhotoImage(Image.open(os.path.join(main_path, "logo1.png")).resize((500,180)))
+        self.logo=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
         self.label0=Label(image=self.logo,background="#EEEEE8")
         self.label0.place(relx=0.5,rely=0.1,anchor=CENTER)
         global entry1
@@ -66,7 +64,7 @@ class App(tk.Tk):
 
                 
     def checkOut(self,main):
-        
+        """Checks out users asks the if they are sure and processes if they click yes"""
         ch=messagebox.askquestion("Checkout","Are your sure you want to checkout",parent=Win2)
         if ch=='yes':
             id=TakeOrders.checkOut(username1)
@@ -74,11 +72,7 @@ class App(tk.Tk):
             self.close(2,main)
             self.newWindow(main,1,TakeOrders.copyData())
             
-            
-
-        
-
-                  
+                      
                 
     def newWindow(self,main,choice,copy):
           """"performs all the functions of the application"""
@@ -135,52 +129,163 @@ class App(tk.Tk):
               button5.place(relx=0.3,rely=0.81,anchor=CENTER)
               
               print("order button was pressed")
-          #re-stock button
-          elif choice==2:
-               label4=ttk.Label(master=Win2,text='regular coffee beans(g):',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.1,rely=0.1,anchor=CENTER)
-               label5=ttk.Label(master=Win2,text='expresso coffee beans(g)>',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.2,rely=0.265,anchor=CENTER)
-               label6=ttk.Label(master=Win2,text='1% milk(oz):',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.2,rely=0.365,anchor=CENTER)
-               label7=ttk.Label(master=Win2,text='suger(packet):',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.2,rely=0.465,anchor=CENTER)
-               label8=ttk.Label(master=Win2,text='non dairy creamer(packet):',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.2,rely=0.565,anchor=CENTER)
-               label9=ttk.Label(master=Win2,text='cocoa power(oz):',font=("Themed Label", 9),
-                              background="#EEEEE8").place(relx=0.2,rely=0.665,anchor=CENTER)
-               label3=tk.Label(master=Win2,text='Current Inventory:',
-                          font=("Helvetica", 9),background="#EEEEE8")
-               regEntry=tk.Entry(master=Win2, width=10).place(relx=0.25,rely=0.1,anchor=CENTER)
-               expressoEntry=tk.Entry(master=Win2, width=10).place(relx=0.1,rely=0.4,anchor=CENTER)
-               milkEntry=tk.Entry(master=Win2, width=10).place(relx=0.1,rely=0.5,anchor=CENTER)
-               sugarEntry=tk.Entry(master=Win2, width=10).place(relx=0.1,rely=0.6,anchor=CENTER)
-               CreamEntry=tk.Entry(master=Win2, width=10).place(relx=0.1,rely=0.7,anchor=CENTER)
-               cocoaEntry=tk.Entry(master=Win2, width=10).place(relx=0.1,rely=0.8,anchor=CENTER)
+          #re-stock and set PRices function
+          elif choice==2 or choice==3:
+               #array used for  labels
+               if choice==2:
+                    namesList=['Current Inventory:','Choose Items to re-stock:','regular coffee beans(oz):'
+                          ,'expresso coffee beans(oz)','1% milk(gal):','suger(packet):','non dairy creamer(packet):'
+                          ,'cocoa power(oz):']  
+               else:
+                           namesList=['Current Prices:','Set Prices:','Regular:','Expresso:        '
+                          ,'Latte:','Cappuccino:','Cocoa Latte:']      
+               #all listbox and lables           
+               global list2
+               list2=Listbox(Win2,width=28,height=6,font=("Helvetica", 12))
+               list2.place(relx=0.8,rely=0.158,anchor=CENTER)
+               label1=ttk.Label(master=Win2,text=namesList[0],font=("Themed Label", 20),
+                              background="#EEEEE8")
+               label1.place(relx=.77,rely=0.03,anchor=CENTER)
+               label2=ttk.Label(master=Win2,text=namesList[1],font=("Themed Label", 20),
+                              background="#EEEEE8")
+               label2.grid(row=1,column=0,sticky=W,pady=4)
+               label0=ttk.Label(master=Win2,text=namesList[2],font=("Themed Label", 12),
+                              background="#EEEEE8")
+               label0.grid(row=2,column=0,sticky=W,pady=4)
+               label5=ttk.Label(master=Win2,text=namesList[3],font=("Themed Label", 12),
+                              background="#EEEEE8")
+               label5.grid(row=3,column=0,sticky=W,pady=4)
+               label6=ttk.Label(master=Win2,text=namesList[4],font=("Themed Label", 12),
+                              background="#EEEEE8")
+               label6.grid(row=4,column=0,sticky=W,pady=4)
+               label7=ttk.Label(master=Win2,text=namesList[5],font=("Themed Label", 12),
+                              background="#EEEEE8")
+               label7.grid(row=5,column=0,sticky=W,pady=4)
+               label8=ttk.Label(master=Win2,text=namesList[6],font=("Themed Label", 12),
+                              background="#EEEEE8")
+               label8.grid(row=6,column=0,sticky=W,pady=4)
+               #if statment that performs tasks based the pressed is re-stock or re-price
+               if choice==2:
+                   label9=ttk.Label(master=Win2,text='cocoa power(oz):',font=("Themed Label", 12),
+                              background="#EEEEE8")
+                   label9.grid(row=7,column=0,sticky=W,pady=4)
+                   cocoaEntry=tk.Entry(master=Win2, width=10)
+                   cocoaEntry.grid(row=7,column=1,sticky=W,pady=4)
+                   addButton = tk.Button(master=Win2,text="ADD",font="Helvetica",width="10",
+                                  height="1",fg="white",bg="SpringGreen3",command=lambda: self.addToInventory(main,regEntry.get(),expressoEntry.get(),
+                                     milkEntry.get(),sugarEntry.get(),creamEntry.get(),cocoaEntry.get()))
+                   addButton.grid(row=8,column=0,sticky=W,pady=4)
+                   for i in range(6):
+                    list2.insert(END,inventory.ViewInventory(i))
+               else:
+                   PriceButton = tk.Button(master=Win2,text="SET",font="Helvetica",width="10",
+                                  height="1",fg="white",bg="SpringGreen3",command=lambda: self.setPrice(main,regEntry.get(),expressoEntry.get(),
+                                     milkEntry.get(),sugarEntry.get(),creamEntry.get()))
+                   PriceButton.grid(row=8,column=0,sticky=W,pady=4)
+                   for i in range(5):
+                    list2.insert(END,inventory.ViewPrices(i))
+                   
+                    
                
+               #entries
+               regEntry=tk.Entry(master=Win2, width=10)
+               regEntry.grid(row=2,column=1,sticky=W,pady=4)
+               expressoEntry=tk.Entry(master=Win2, width=10)
+               expressoEntry.grid(row=3,column=1,sticky=W,pady=4)
+               milkEntry=tk.Entry(master=Win2, width=10)
+               milkEntry.grid(row=4,column=1,sticky=W,pady=4)
+               sugarEntry=tk.Entry(master=Win2, width=10)
+               sugarEntry.grid(row=5,column=1,sticky=W,pady=4)
+               creamEntry=tk.Entry(master=Win2, width=10)
+               creamEntry.grid(row=6,column=1,sticky=W,pady=4)
                
-          
-          
-              # button1 = tk.Button(master=Win1,text="ADD",font="Helvetica",width="10",
-                                 #height="2",fg="white",bg="SpringGreen3",command=lambda: self.register(userEntry.get(),
-                               #  firstEntry.get(),lastEntry.get(),passEntry.get()))
-              
-              
                print("re-stock button was pressed")
-          elif choice==3:
-              print("logs button was pressed")
           elif choice==4:
-              print("Pricing button was pressed")
+              global list3
+              #log and Statistics button
+              frame=tk.Frame(Win2)
+              frame.place(relx=0.5,rely=0.23,anchor=CENTER)
+              label1=tk.Label(master=Win2,text="LOGS:\n(An empty search returns all logs)",font=("Helvetica", 12),
+                              background="#EEEEE8")
+              label1.place(relx=.5,rely=0.035,anchor=CENTER)
+              list3=Listbox(frame,width=100,
+                            height=10,font=("Helvetica", 10))
+              list3.pack(side="left",fill="y")
+              scroll2=Scrollbar(frame,orient='vertical') 
+              scroll2.pack(side="right",fill="y")
+              list3.config(yscrollcommand=scroll2.set)
+              label2=tk.Label(master=Win2,text="STATISTICS:",font=("Helvetica", 12),
+                              background="#EEEEE8")
+              label2.place(relx=.5,rely=0.61,anchor=CENTER)
+              list4=Listbox(Win2,width=35,
+                            height=5,font=("Helvetica", 10))
+              list4.place(relx=.5,rely=0.7,anchor=CENTER)
+              searchEntry=tk.Entry(master=Win2, width=35,font=("Helvetica", 9))
+              searchEntry.place(relx=0.5,rely=0.39,anchor=CENTER)
+              searchButton = tk.Button(master=Win2,text="Search Logs",font="Helvetica",width="10"
+                    ,fg="white",bg="SpringGreen3",command=lambda: self.logSearch(searchEntry.get()))
+              searchButton.place(relx=0.5,rely=0.45,anchor=CENTER)
+              #add logs to list box
+              with open('AppData.json','r') as openfile:
+                 Database=json.load(openfile)
+              for i in Database['logs']:
+                    list3.insert(END,Database['logs'][i])
+              for i in range(5):
+                    list4.insert(END,inventory.viewStats(i))
+
+
           
+
+          #goes back to previous screen
           button1 = tk.Button(master=Win2,text="BACK",font="Helvetica",
                                  width="10",height="1",fg="white",bg="SpringGreen3",
                                  command=lambda: self.close(2,main))
           button1.place(relx=0.5,rely=0.95,anchor=CENTER)
-         
-    def close(self,choice,main):
+    def logSearch(self,search):
+        """displays search results"""
+        x=False
+        list3.delete(0,END)
+        with open('AppData.json','r') as openfile:
+                 Database=json.load(openfile)
+        for i in Database['logs']:
+                
+                if search.lower() in Database['logs'][i].lower():
+                    x=True
+                    list3.insert(END,Database['logs'][i])
+        if x==False:
+            messagebox.showwarning(parent=Win2,message="Search failed.\nCould not find a match for: "+str(search))
+
+
+
+
+
+    def addToInventory(self,main,reg,expr,milk,sugar,cream,cocoa):
+        """Add button: ingredients to inventory and displays the updated inventory """
+        ch=messagebox.askquestion("Inventory","Are your sure you want to add these items\n to the inventory",parent=Win2)
         
+        if ch=='yes':
+            cost=inventory.reStock(reg,expr,milk,
+                                     sugar,cream,cocoa,username1)
+            
+            cost="{:.2f}".format(float(cost))
+            messagebox.showinfo(parent=Win2,message="Transaction complete. Total= "+ cost+"$")
+            self.close(2,main)
+            self.newWindow(main,2,0)
+    def setPrice(self,main,reg,expr,latte,capa,cocoa):
+        """Set menu prices after add button is pressed"""
+        ch=messagebox.askquestion("Inventory","Are you sure you want to add these items\n to the inventory",parent=Win2)
+        
+        if ch=='yes':
+            inventory.setPrice(reg,expr,latte,capa,cocoa,username1)
+            messagebox.showinfo(parent=Win2,message="Transaction complete")
+            self.close(2,main)
+            self.newWindow(main,3,0)
+
+    def close(self,choice,main):
+        """Closes certain windows"""
         if(choice==1):
           Win1.destroy()
+
         else:
             Win2.destroy()
             self.loginOrHub(1,main,2) 
@@ -195,7 +300,7 @@ class App(tk.Tk):
        
        global dataBase
        #opens dataBase
-       with open(os.path.join(main_path, "AppData.json"),'r') as openfile:
+       with open('AppData.json','r') as openfile:
                 read=json.load(openfile)
        dataBase=read
        if(choice==2):
@@ -252,7 +357,7 @@ class App(tk.Tk):
             Win1.title("Warrior Cafe")
             Win1.geometry("800x600")
             Win1.configure(bg="#EEEEE8")
-            self.logo1=ImageTk.PhotoImage(Image.open(os.path.join(main_path, "logo1.png")).resize((500,180)))
+            self.logo1=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
             label6=Label(master=Win1,image=self.logo1,background="#EEEEE8")
             label6.place(relx=0.5,rely=0.1,anchor=CENTER)
             #prints the users name 
@@ -265,9 +370,9 @@ class App(tk.Tk):
             button3= tk.Button(master=Win1,text="Re-stock",font="Helvetica",
                                  width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,2,0))
             button4 = tk.Button(master=Win1,text="Logs &\n Statistics",font="Helvetica",
-                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,3,0))
-            button5 = tk.Button(master=Win1,text="Set Prices",font="Helvetica",
                                  width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,4,0))
+            button5 = tk.Button(master=Win1,text="Set Prices",font="Helvetica",
+                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,3,0))
             button6 = tk.Button(master=Win1,text="Log out",font="Helvetica",
                                  width="10",height="1",fg="white",bg="SpringGreen3",command=lambda: self.close(1,MainWin))
             button2.place(relx=0.35,rely=0.5,anchor=CENTER)
@@ -282,6 +387,7 @@ class App(tk.Tk):
                messagebox.showerror(message="invalid username or Password")
                
     def register(self,user,first,last,password):
+        """Register button: registers user or prints error message"""
         message=["This username is already taken",
                  "First name Error. Must be alphabets only",
                  "Last name Error. Must be alphabets only","password must be alleast six characters"]
@@ -291,13 +397,6 @@ class App(tk.Tk):
             Win1.destroy()
         else:
             messagebox.showerror(parent=Win1,message=message[x-1])
-        
-   
-    
-    
-    
-            
-
 
 if __name__ == "__main__":
     app = App()
