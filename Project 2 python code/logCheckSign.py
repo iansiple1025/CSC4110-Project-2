@@ -1,6 +1,7 @@
 
 from datetime import datetime
-import json
+import json, os
+main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 
 
 class loginChecks:
@@ -17,7 +18,7 @@ class loginChecks:
         
         
         
-        with open('AppData.json','r') as openfile:
+        with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
                 data=json.load(openfile)
     
         
@@ -25,13 +26,13 @@ class loginChecks:
                #logs event
                if(log==1):
                  data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+username+" logged in "+"at: "+time
-               with open("AppData.json","w") as out:
+               with open(os.path.join(main_path, "AppData.json"),"w") as out:
                  json.dump(data,out)
                return True
         else:
               data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" failed to log in "+"at: "+str(time)
               data['orderID']+=1
-              with open("AppData.json","w") as out:
+              with open(os.path.join(main_path, "AppData.json"),"w") as out:
                json.dump(data,out)
               return False
     def sign(username,first,last,password):
@@ -45,7 +46,7 @@ class loginChecks:
          last=last.replace(" ","")
          password.replace(" ","")
          check=0
-         with open('AppData.json','r') as openfile:
+         with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
                 data=json.load(openfile)
          if username in data['usernames'].keys()or username=="":
             check=1
@@ -67,13 +68,13 @@ class loginChecks:
              #logs event
              data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" was registered "+"at: "+str(time)
              data['orderID']+=1
-             with open("AppData.json","w") as out:
+             with open(os.path.join(main_path, "AppData.json"),"w") as out:
               json.dump(data,out)
 
              return 0
          else:
              data['logs'][data['orderID']]="Transaction #: "+str(data['orderID'])+", User name "+str(username)+" failed to register "+"at: "+str(time)
-             with open("AppData.json","w") as out:
+             with open(os.path.join(main_path, "AppData.json"),"w") as out:
               json.dump(data,out)
              return check
         

@@ -1,22 +1,23 @@
 from datetime import datetime
-import json
+import json, os
 
+main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 
 class TakeOrders:
  def copyData():
-         with open('AppData.json','r') as openfile:
+         with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
                 OldData=json.load(openfile)
-         with open('CopyAppData.json','r') as openfile:
+         with open(os.path.join(main_path, os.path.join(main_path, "CopyAppData.json")),'r') as openfile:
                 newData=json.load(openfile)
                 newData=OldData
             
-         with open("CopyAppData.json","w") as out:
+         with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
               json.dump(newData,out)
          return 0
     
  def order(choice):
           total=[]
-          with open('CopyAppData.json','r') as openfile:
+          with open(os.path.join(main_path, os.path.join(main_path, "CopyAppData.json")),'r') as openfile:
                 Data=json.load(openfile)
           if choice==1:
                 
@@ -29,7 +30,7 @@ class TakeOrders:
                       total.append(Data['prices']['regular'])
                       total.append(Data['current'][0])
                       Data['current'][1]+="regular "
-                      with open("CopyAppData.json","w") as out:
+                      with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
                          json.dump(Data,out)
                       return total
                       
@@ -44,7 +45,7 @@ class TakeOrders:
                       total.append(Data['prices']['expresso'])
                       total.append(Data['current'][0])
                       Data['current'][1]+="expresso "
-                      with open("CopyAppData.json","w") as out:
+                      with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
                          json.dump(Data,out)
                       return total
                       
@@ -60,7 +61,7 @@ class TakeOrders:
                       total.append(Data['prices']['latte'])
                       total.append(Data['current'][0])
                       Data['current'][1]+="latte "
-                      with open("CopyAppData.json","w") as out:
+                      with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
                          json.dump(Data,out)
                       return total
                       
@@ -76,7 +77,7 @@ class TakeOrders:
                       total.append(Data['prices']['cappa'])
                       total.append(Data['current'][0])
                       Data['current'][1]+="cappa "
-                      with open("CopyAppData.json","w") as out:
+                      with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
                          json.dump(Data,out)
                       return total
                       
@@ -94,7 +95,7 @@ class TakeOrders:
                       Data['current'][1]+="cocoa latte "
                       total.append(Data['current'][0])
                       
-                      with open("CopyAppData.json","w") as out:
+                      with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
                          json.dump(Data,out)
                       return total
                       
@@ -105,9 +106,9 @@ class TakeOrders:
          time= datetime.now()
          time = time.strftime("%H:%M:%S")
          
-         with open('CopyAppData.json','r') as openfile:
+         with open(os.path.join(main_path, os.path.join(main_path, "CopyAppData.json")),'r') as openfile:
                 OldData=json.load(openfile)
-         with open('AppData.json','r') as openfile:
+         with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
                 NewData=json.load(openfile)
          NewData=OldData
          id=NewData['orderID']
@@ -120,7 +121,7 @@ class TakeOrders:
          NewData['orderID']+=1
          NewData['current'][0]=0
          NewData['current'][1]=""
-         with open("AppData.json","w") as out:
+         with open(os.path.join(main_path, "AppData.json"),"w") as out:
                         json.dump(NewData,out)
          return id
 

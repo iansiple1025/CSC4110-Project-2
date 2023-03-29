@@ -1,6 +1,9 @@
-import json
+import json, os
+
+main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+
 #creates json file for the app
-with open('AppData.json','r') as openfile:
+with open(os.path.join(main_path, "AppData.json"),'r') as openfile:
    Database=json.load(openfile)
 
 sale=[0,""]
@@ -40,5 +43,5 @@ Database["prices"]=price
 
 
 #reads the file user requested
-with open("AppData.json","w") as out:
+with open(os.path.join(main_path, "CopyAppData.json"),"w") as out:
     json.dump(Database,out)

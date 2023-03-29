@@ -1,11 +1,13 @@
 import tkinter as tk
-import json
+import json, os
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from PIL import Image,ImageTk
 from logCheckSign import loginChecks
 from TakeOrder import TakeOrders
+
+main_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 
 class App(tk.Tk):
     def __init__(self):
@@ -18,7 +20,8 @@ class App(tk.Tk):
         self.geometry("800x600")
         self.configure(bg="#EEEEE8")
         #logo
-        self.logo=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
+        
+        self.logo=ImageTk.PhotoImage(Image.open(os.path.join(main_path, "logo1.png")).resize((500,180)))
         self.label0=Label(image=self.logo,background="#EEEEE8")
         self.label0.place(relx=0.5,rely=0.1,anchor=CENTER)
         global entry1
@@ -192,7 +195,7 @@ class App(tk.Tk):
        
        global dataBase
        #opens dataBase
-       with open('AppData.json','r') as openfile:
+       with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
                 read=json.load(openfile)
        dataBase=read
        if(choice==2):
@@ -249,7 +252,7 @@ class App(tk.Tk):
             Win1.title("Warrior Cafe")
             Win1.geometry("800x600")
             Win1.configure(bg="#EEEEE8")
-            self.logo1=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
+            self.logo1=ImageTk.PhotoImage(Image.open(os.path.join(main_path, "logo1.png")).resize((500,180)))
             label6=Label(master=Win1,image=self.logo1,background="#EEEEE8")
             label6.place(relx=0.5,rely=0.1,anchor=CENTER)
             #prints the users name 
