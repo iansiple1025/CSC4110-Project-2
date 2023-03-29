@@ -195,7 +195,7 @@ class App(tk.Tk):
        
        global dataBase
        #opens dataBase
-       with open(os.path.join(main_path, os.path.join(main_path, "AppData.json")),'r') as openfile:
+       with open(os.path.join(main_path, "AppData.json"),'r') as openfile:
                 read=json.load(openfile)
        dataBase=read
        if(choice==2):
