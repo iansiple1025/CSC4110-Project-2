@@ -13,7 +13,7 @@ class loginChecks:
         username=username.lower()
         
         time= datetime.now()
-        time = time.strftime("%H:%M:%S")
+        time = time.strftime("%H:%M:%S, %m/%d/%Y")
         
         
         
@@ -42,7 +42,7 @@ class loginChecks:
          """Signs up user"""
          #current time
          time= datetime.now()
-         time = time.strftime("%H:%M:%S")
+         time = time.strftime("%H:%M:%S, %m/%d/%Y")
          #gets rid of spaces
          username=username.replace(" ","")
          last=last.replace(" ","")

@@ -108,7 +108,7 @@ class TakeOrders:
                 
  def checkOut(user):
          time= datetime.now()
-         time = time.strftime("%H:%M:%S")
+         time = time.strftime("%H:%M:%S, %m/%d/%Y")
          
          with open('CopyAppData.json','r') as openfile:
                 OldData=json.load(openfile)

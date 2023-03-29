@@ -6,7 +6,7 @@ class inventory:
         
         cost=0
         time= datetime.now()
-        time = time.strftime("%H:%M:%S")
+        time = time.strftime("%H:%M:%S, %m/%d/%Y")
         with open('AppData.json','r') as openfile:
             Database=json.load(openfile)
         regPrice=0.11; exprPrice=.14;milkPrice=4.36;sugarPrice=0.19; creamerPrice=0.08;cocaPrice=0.56
@@ -87,7 +87,7 @@ class inventory:
    def setPrice(reg,expr,latte,capa,cocoa,username):
         
         time= datetime.now()
-        time = time.strftime("%H:%M:%S")
+        time = time = time.strftime("%H:%M:%S, %m/%d/%Y")
         with open('AppData.json','r') as openfile:
             Database=json.load(openfile)
         regPrice=0.11; exprPrice=.14;milkPrice=4.36;sugarPrice=0.19; creamerPrice=0.08;cocaPrice=0.56
