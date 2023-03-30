@@ -28,7 +28,7 @@ class inventory:
         if(coca!="" and coca.isdigit()):
             cost+=float(coca)*cocaPrice
             Database['cocoa']+=float(coca)
-            Database['cost']+=cost
+        Database['cost']+=cost
         cost="{:.2f}".format(float(cost))
         log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username][0])\
          +", Re-stock completed total= "+str(cost)+"$"+" at "+str(time)
