@@ -754,7 +754,7 @@ class App(customtkinter.CTk):
                 button3.grid(row=2, column=1, sticky='w', padx = 30)
                 button4.grid(row=3, column=0, sticky='e', padx = 30)
                 button5.grid(row=3, column=1, sticky='w', padx = 30)
-                button6.grid(row=4, column=0, columnspan= 2)
+                button6.grid(row=4, column=0, columnspan=2)
                 
            
               
