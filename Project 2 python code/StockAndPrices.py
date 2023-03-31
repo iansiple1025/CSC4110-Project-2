@@ -43,7 +43,7 @@ class inventory:
         
     
         
-        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username][0])\
+        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username.lower()][0])\
          +", Re-stock completed total= "+str(cost)+"$"+" at "+str(time)
         
         Database['logs'][Database['orderID']]=log
@@ -117,7 +117,7 @@ class inventory:
             Database["prices"]['cocoaLatte']=float(cocoa)
         
             
-        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username][0])\
+        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username.lower()][0])\
          +", re-pricing completed at "+str(time)
         Database['logs'][Database['orderID']]=log
         Database['orderID']+=1
@@ -150,3 +150,4 @@ class inventory:
                     return "Gross Profit: "+str(gross)+"$"
             elif choice==4:
                     return "Gross Margin: "+str(margin)+"%"
+                
