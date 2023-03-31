@@ -1,5 +1,5 @@
 import tkinter as tk
-import json
+import json, customtkinter
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -8,7 +8,12 @@ from logCheckSign import loginChecks
 from TakeOrder import TakeOrders
 from StockAndPrices import inventory
 
-class App(tk.Tk):
+class App(customtkinter.CTk):
+    WIDTH = 1000
+    HEIGHT = 700
+    DARK_COLOR = '#90ee90'
+    LIGHT_COLOR = '#233923'
+    BG_COLOR = '#EEEEE8'
     def __init__(self):
         """Main window"""
         super().__init__()
@@ -16,33 +21,240 @@ class App(tk.Tk):
         totalLabel=Label(self)
         #window creation
         self.title("Warrior Cafe")
-        self.geometry("800x600")
-        self.configure(bg="#EEEEE8")
-        #logo
-        self.logo=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
-        self.label0=Label(image=self.logo,background="#EEEEE8")
-        self.label0.place(relx=0.5,rely=0.1,anchor=CENTER)
-        global entry1
-        global entry2
-        #labels and buttons
-        self.label2=ttk.Label(master=self,text='Copyright Datatree, 2023',font=("Themed Label", 10),
-                    background="#EEEEE8").place(relx=0,rely=.98,anchor="w")
-        self.label3=ttk.Label(master=self,text='username',font=("Themed Label", 9),
-                    background="#EEEEE8").place(relx=0.5,rely=0.26,anchor=CENTER)
-        self.label4=ttk.Label(master=self,text='password',font=("Themed Label", 9),
-                    background="#EEEEE8").place(relx=0.5,rely=0.36,anchor=CENTER)
-        self.button1 = tk.Button(master=self,text="Log in", font="Helvetica",width="18",height="3",fg="white",bg="SpringGreen3",
-        command=lambda: self.loginOrHub(1,self,1)).place(relx=0.5,rely=0.52,anchor=CENTER)
-        self.button2 = tk.Button(master=self,text="Sign up", font="Helvetica",width="15",height="3",fg="white",
-         bg="SpringGreen3",command= lambda:self.loginOrHub(2,self,1)).place(relx=0.2,rely=0.8,anchor=CENTER)
-        self.button3 = tk.Button(master=self,text="Simulation mode",font="Helvetica",
-            width="15",height="3",fg="white",bg="SpringGreen3").place(relx=0.5,rely=0.8,anchor=CENTER)
-        self.button4 = tk.Button(master=self,text="Exit",font="Helvetica",width="15",height="3",fg="white",
-        bg="SpringGreen3",command=self.destroy).place(relx=0.8,rely=0.8,anchor=CENTER) 
-        entry1=tk.Entry(master=self, width=34)
-        entry2=tk.Entry(master=self, width=34,show="*")
-        entry1.place(relx=0.5,rely=0.3,anchor=CENTER)
-        entry2.place(relx=0.5,rely=0.4,anchor=CENTER)
+        self.geometry(f"{self.WIDTH}x{self.HEIGHT}")
+        self.resizable(1,1)
+
+
+        '''
+        ============= LOAD IMAGES =============
+        '''
+        self.logo_image = customtkinter.CTkImage(Image.open("logo1.png"), size=(500,150))
+        self.home_image = customtkinter.CTkImage(light_image=Image.open("home_light.png"),
+                                                 dark_image=Image.open("home_dark.png"),
+                                                 size=(40, 40))
+        self.simulation_image = customtkinter.CTkImage(light_image=Image.open("simulation_light.png"),
+                                                 dark_image=Image.open("simulation_dark.png"),
+                                                 size=(40, 40))
+        self.setting_image = customtkinter.CTkImage(light_image=Image.open("setting_light.png"),
+                                                 dark_image=Image.open("setting_dark.png"),
+                                                 size=(40, 40))
+        self.bg_image = customtkinter.CTkImage(light_image=Image.open("setting_light.png"),
+                                                 dark_image=Image.open("setting_dark.png"),
+                                                 size=(40, 40))
+        
+        
+        '''
+        ============= CREATE MAIN FRAMES =============
+        '''
+
+        # create login frame
+        self.login_frame = customtkinter.CTkFrame(self, 
+                                                  corner_radius=0)
+        self.login_frame.grid(row = 0, column = 0, sticky='news')
+        
+        # create logo frame
+        self.logo_frame = customtkinter.CTkFrame(self.login_frame,
+                                                 corner_radius=0,
+                                                 height=180,
+                                                 fg_color='#858585')
+        self.logo_frame.grid(row = 0, column = 0, columnspan=2, sticky='news')
+
+        # create nav frame
+        self.nav_frame = customtkinter.CTkFrame(self.login_frame,  
+                                                corner_radius=0,
+                                                fg_color=("#c9c9c9","#212121"),
+                                                width=200)
+        self.nav_frame.grid(row=1, column=0, sticky='news')
+        self.nav_frame.grid_propagate(0)
+        
+        # create dashboard frame
+        self.dashboard_frame = customtkinter.CTkFrame(self.login_frame, 
+                                                      corner_radius=0,
+                                                      fg_color='transparent')        
+        self.dashboard_frame.grid(row=1, column=1, sticky='news')
+        
+        # create simulation frame
+        self.simulation_frame = customtkinter.CTkFrame(self.login_frame, 
+                                                      corner_radius=0,
+                                                      fg_color='transparent')        
+        self.simulation_frame.grid(row=1, column=1, sticky='news')
+
+        # create setting frame
+        self.setting_frame = customtkinter.CTkFrame(self.login_frame, 
+                                                      corner_radius=0,
+                                                      fg_color='transparent')        
+        self.setting_frame.grid(row=1, column=1, sticky='news')
+
+
+        '''
+        ============= ADD WIDGETS TO FRAMES =============
+        '''
+        # add image to logo frame
+        self.logo_label = customtkinter.CTkLabel(self.logo_frame, 
+                                                 text='', 
+                                                 image=self.logo_image)
+        self.logo_label.pack()
+
+        # add frame buttons
+        self.dashboard_button = customtkinter.CTkButton(self.nav_frame, 
+                                                   corner_radius=0, 
+                                                   height=80,                         
+                                                   text="Dashboard",
+                                                   font=("Arial", 18),
+                                                   fg_color="transparent", 
+                                                   text_color=("gray10", "gray90"), 
+                                                   hover_color=("gray70", "gray30"),
+                                                   image=self.home_image,
+                                                   command=self.dashboard_button_event,
+                                                   anchor='w')        
+        self.dashboard_button.grid(row=0, column=0, sticky='news')
+        self.simulation_button = customtkinter.CTkButton(self.nav_frame, 
+                                                   corner_radius=0, 
+                                                   height=80,                         
+                                                   text="Simulation Mode",
+                                                   font=("Arial", 18),
+                                                   fg_color="transparent", 
+                                                   text_color=("gray10", "gray90"), 
+                                                   hover_color=("gray70", "gray30"),
+                                                   image=self.simulation_image,
+                                                   command=self.simulation_button_event,
+                                                   anchor='w')        
+        self.simulation_button.grid(row=1, column=0, sticky='news')
+        self.setting_button = customtkinter.CTkButton(self.nav_frame, 
+                                                   corner_radius=0, 
+                                                   height=80,                         
+                                                   text="Setting",
+                                                   font=("Arial", 18),
+                                                   fg_color="transparent", 
+                                                   text_color=("gray10", "gray90"), 
+                                                   hover_color=("gray70", "gray30"),
+                                                   image=self.setting_image,
+                                                   command=self.setting_button_event,
+                                                   anchor='w')        
+        self.setting_button.grid(row=2, column=0, sticky='news')
+        
+        # add version label
+        self.version_label = customtkinter.CTkLabel(self.nav_frame, 
+                                                 text='Copyright\nDataTree\nv1.1.1',
+                                                 anchor="s")
+        self.version_label.grid(row=3, column=0, sticky='news', pady=20)
+        
+        
+        '''
+        ============= LOGIN PAGE =============
+        '''
+
+        # create login frame
+        self.account_frame = customtkinter.CTkFrame(self.dashboard_frame, 
+                                                    corner_radius=0,
+                                                    fg_color="transparent")
+        self.account_frame.grid(row=0, column=0, sticky='ns')       
+        self.account_label = customtkinter.CTkLabel(self.account_frame, 
+                                                    text="Login Page",
+                                                    font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.account_label.grid(row=0, column=0, padx=30, pady=(150, 15))
+        self.username_entry = customtkinter.CTkEntry(self.account_frame, width=250, placeholder_text="username")
+        self.username_entry.grid(row=1, column=0, padx=30, pady=(15, 15))
+        self.password_entry = customtkinter.CTkEntry(self.account_frame, width=250, show="*", placeholder_text="password")
+        self.password_entry.grid(row=2, column=0, padx=30, pady=(0, 15))
+        self.login_button = customtkinter.CTkButton(self.account_frame, text="Login", command=lambda:self.loginOrHub(1,self,1), width=120)
+        self.login_button.grid(row=3, column=0, padx=30, pady=(15, 15))
+        self.signup_button = customtkinter.CTkButton(self.account_frame, text="Signup", command=lambda:self.loginOrHub(2,self,1), width=120)
+        self.signup_button.grid(row=4, column=0, padx=30, pady=(0, 15))
+        
+        '''
+        ============= SETTING PAGE =============
+        '''
+        # language
+        self.language_label = customtkinter.CTkLabel(self.setting_frame, 
+                                                     text = "Language:", 
+                                                     font=("Arial", 18))
+        self.language_label.grid(row=0, column=0, pady=(150, 20), sticky='e')
+        self.language_optionmenu = customtkinter.CTkOptionMenu(self.setting_frame, 
+                                                               values=["English", "Spanish", "French"],
+                                                               anchor='center',
+                                                               font=("Arial", 18))
+        self.language_optionmenu.grid(row=0, column=1, padx=20, pady=(150, 20), sticky='w')
+
+        # theme
+        self.theme_label = customtkinter.CTkLabel(self.setting_frame, 
+                                                  text="Theme:", 
+                                                  font=("Arial", 18))
+        self.theme_label.grid(row=1, column=0, pady=(0, 20), sticky='e')
+        self.theme_optionemenu = customtkinter.CTkOptionMenu(self.setting_frame, 
+                                                             values=["Light", "Dark"],
+                                                             font=("Arial", 18),
+                                                             anchor='center',
+                                                             command=self.change_theme_event)
+        self.theme_optionemenu.grid(row=1, column=1, padx=20, pady=(0, 20), sticky='w')
+
+        # scaling
+        self.scaling_label = customtkinter.CTkLabel(self.setting_frame, 
+                                                    text="UI Scaling:", 
+                                                    font=("Arial", 18))
+        self.scaling_label.grid(row=2, column=0, pady=(0, 20), sticky='e')
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.setting_frame, 
+                                                               values=["80%", "90%", "100%", "110%", "120%"],
+                                                               font=("Arial", 18),
+                                                               anchor='center',
+                                                               command=self.change_scaling_event)
+        self.scaling_optionemenu.grid(row=2, column=1, padx=20, pady=(0, 20), sticky='w')
+
+
+        '''
+        ============= GRID CONFIGURE =============
+        '''
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.nav_frame.columnconfigure(0, weight=1)
+        self.login_frame.rowconfigure(1, weight=1)        
+        self.login_frame.columnconfigure(1, weight=1)
+        self.nav_frame.rowconfigure(3, weight=1)
+        self.dashboard_frame.rowconfigure(0, weight=1)
+        self.dashboard_frame.grid_columnconfigure(0, weight=1)
+        self.setting_frame.columnconfigure((0,1), weight=1)
+        self.setting_frame.grid_columnconfigure((0,1), weight=1)
+        '''
+        ============= SET DEFAULT VALUES =============
+        '''
+        self.select_frame_by_name("dashboard")
+        self.scaling_optionemenu.set("100%")
+        self.theme_optionemenu.set("Dark")
+        
+
+        
+    '''
+    ============= METHODS =============
+    '''
+    def select_frame_by_name(self, name):
+        # set button color for selected button
+        self.dashboard_button.configure(fg_color=("gray75", "gray25") if name == "dashboard" else "transparent")
+        self.simulation_button.configure(fg_color=("gray75", "gray25") if name == "simulation" else  "transparent")
+        self.setting_button.configure(fg_color=("gray75", "gray25") if name == "setting" else "transparent")
+        # show selected frame
+        if name == "dashboard":
+            self.dashboard_frame.grid(row=1, column=1, sticky="nsew")
+        else:
+            self.dashboard_frame.grid_forget()
+        if name == "simulation":
+            self.simulation_frame.grid(row=1, column=1, sticky="nsew")
+        else:
+            self.simulation_frame.grid_forget()
+        if name == "setting":
+            self.setting_frame.grid(row=1, column=1, sticky="nsew")
+        else:
+            self.setting_frame.grid_forget()
+    def dashboard_button_event(self):
+        self.select_frame_by_name("dashboard")
+    def simulation_button_event(self):
+        self.select_frame_by_name("simulation")
+    def setting_button_event(self):
+        self.select_frame_by_name("setting")
+    def change_theme_event(self, new_theme):
+        customtkinter.set_appearance_mode(new_theme)
+    def change_scaling_event(self, new_scaling: str):
+        new_scaling_float = int(new_scaling.replace("%", "")) / 100
+        customtkinter.set_widget_scaling(new_scaling_float)
 
     def addItems(self,choice):
             
@@ -57,8 +269,10 @@ class App(tk.Tk):
                 str="{:.2f}".format(x[0])
                 total="{:.2f}".format(x[1])
                 
-                totalLabel=Label(master=Win2,text=total+"$",font=("Helvetica", 20),background="#EEEEE8")
-                totalLabel.place(relx=0.78,rely=0.73,anchor=CENTER)
+                totalLabel=customtkinter.CTkLabel(master= checkout_frame,
+                                                  text=total+"$",
+                                                  font=("Helvetica", 20))
+                totalLabel.grid(row = 1, column = 1)
                 list1.insert(END,drinks[choice-1]+": "+str)
             
 
@@ -75,172 +289,297 @@ class App(tk.Tk):
                       
                 
     def newWindow(self,main,choice,copy):
-          """"performs all the functions of the application"""
-          global Win2
+            """"performs all the functions of the application"""
+            global Win2
           
-          Win2=tk.Toplevel(main)
+            Win2=customtkinter.CTkToplevel(main)
+            Win2.title("Warrior Cafe")
+            Win2.geometry("800x600")
+            
+            Win1.destroy()
           
-          Win2.title("Warrior Cafe")
-          Win2.geometry("800x600")
-          Win2.configure(bg="#EEEEE8")
-          Win1.destroy()
-          
-          #order button
-          if choice==1:
-              
+            #order button
+            if choice==1:
+                # load images
+                self.image1=customtkinter.CTkImage(Image.open("reg.jpg"), size=(100,100))
+                self.image2=customtkinter.CTkImage(Image.open("expresso.jpg"), size=(100,100))
+                self.image3=customtkinter.CTkImage(Image.open("latte.jpg"), size=(100,100))
+                self.image4=customtkinter.CTkImage(Image.open("cappa.jpg"), size=(100,100))
+                self.image5=customtkinter.CTkImage(Image.open("cocoa.jpg"), size=(100,100))
 
-              #listbox with scroll bar
-              scroll=Scrollbar(Win2)
-              
-              scroll.pack(side="right",fill="y")
-              global list1
-              list1=Listbox(Win2,yscrollcommand=scroll.set,width=38,height=20,font=("Helvetica", 10))
-              list1.place(relx=0.8,rely=0.4,anchor=CENTER)
-              scroll.config(command=list1.yview)
-        
-              #labels
-              label1=tk.Label(master=Win2,text='Menu Items',font=("Helvetica", 20),
-                              background="#EEEEE8")
-              label1.place(relx=0.3,rely=0.13,anchor=CENTER)
-              
-              label2=tk.Label(master=Win2,text='Total: ',font=("Helvetica", 20),
-                              background="#EEEEE8")
-              label2.place(relx=0.68,rely=0.73,anchor=CENTER)
-              #checkout button
-              button6 = tk.Button(master=Win2,text="checkout",font="Helvetica",width="15",
-                                 height="2",fg="white",bg="SpringGreen3",command=lambda: self.checkOut(main))
-              button6.place(relx=0.8,rely=0.85,anchor=CENTER)
+                # create main frame
+                order_frame = customtkinter.CTkFrame(Win2, fg_color="transparent")
+                order_frame.grid(row = 0, column = 0, columnspan=2, sticky='news')
+                order_frame.rowconfigure(0, weight=1)
+                order_frame.columnconfigure((0,1), weight=1)
+                
+                # menu
+                menu_frame = customtkinter.CTkFrame(order_frame, fg_color="transparent")
+                menu_frame.grid(row = 0, column = 0, sticky='news')
+                label1=customtkinter.CTkLabel(menu_frame,
+                                              text='Menu Items',
+                                              font=("Helvetica", 20))
+                label1.grid(row = 0, column = 0, columnspan =2, pady =20)
+                menu_frame.rowconfigure((0,1,2,3), weight= 1)
+                menu_frame.columnconfigure((0,1), weight= 1)
+                #creates image buttons
+                button1=customtkinter.CTkButton(master=menu_frame,
+                                                text="Regular",
+                                                fg_color="transparent",
+                                                image=self.image1,
+                                                compound="top",
+                                                command=lambda:self.addItems(1))
+                button1.grid(row = 1, column = 0)
+                
+                button2=customtkinter.CTkButton(master=menu_frame,
+                                                text="Espresso",
+                                                fg_color="transparent",
+                                                image=self.image2,
+                                                compound="top",
+                                                command=lambda:self.addItems(2))
+                button2.grid(row = 1, column = 1)
+                
+                button3=customtkinter.CTkButton(master=menu_frame,
+                                                text="Latte",
+                                                fg_color="transparent",
+                                                image=self.image3,
+                                                compound="top",
+                                                command=lambda:self.addItems(3))
+                button3.grid(row = 2, column = 0)
+                
+                button4=customtkinter.CTkButton(master=menu_frame,
+                                                image=self.image4,
+                                                text="Cappa",
+                                                fg_color="transparent",
+                                                compound="top",
+                                                command=lambda:self.addItems(4))
+                button4.grid(row = 2, column = 1)
+                
+                button5=customtkinter.CTkButton(master=menu_frame,
+                                                image=self.image5,
+                                                fg_color="transparent",
+                                                text="Cocoa",
+                                                compound="top",
+                                                command=lambda:self.addItems(5))
+                button5.grid(row = 3, column = 0, columnspan=2)
 
-              #creates image buttons
-              self.image1=ImageTk.PhotoImage(Image.open("reg.jpg").resize((100,100)))
-              button1=Button(master=Win2,image=self.image1,command=lambda:self.addItems(1))
-              button1.place(relx=0.2,rely=0.31,anchor=CENTER)
-              self.image2=ImageTk.PhotoImage(Image.open("expresso.jpg").resize((100,100)))
-              button2=Button(master=Win2,image=self.image2,command=lambda:self.addItems(2))
-              button2.place(relx=0.4,rely=0.31,anchor=CENTER)
-              self.image3=ImageTk.PhotoImage(Image.open("latte.jpg").resize((100,100)))
-              button3=Button(master=Win2,image=self.image3,command=lambda:self.addItems(3))
-              button3.place(relx=0.2,rely=0.56,anchor=CENTER)
-              self.image4=ImageTk.PhotoImage(Image.open("cappa.jpg").resize((100,100)))
-              button4=Button(master=Win2,image=self.image4,command=lambda:self.addItems(4))
-              button4.place(relx=0.4,rely=0.56,anchor=CENTER)
-              self.image5=ImageTk.PhotoImage(Image.open("cocoa.jpg").resize((100,100)))
-              button5=Button(master=Win2,image=self.image5,command=lambda:self.addItems(5))
-              button5.place(relx=0.3,rely=0.81,anchor=CENTER)
-              
-              print("order button was pressed")
-          #re-stock and set PRices function
-          elif choice==2 or choice==3:
-               #array used for  labels
-               if choice==2:
-                    namesList=['Current Inventory:','Choose Items to re-stock:','regular coffee beans(oz):'
-                          ,'expresso coffee beans(oz)','1% milk(gal):','suger(packet):','non dairy creamer(packet):'
-                          ,'cocoa power(oz):']  
-               else:
-                           namesList=['Current Prices:','Set Prices:','Regular:','Expresso:        '
-                          ,'Latte:','Cappuccino:','Cocoa Latte:']      
-               #all listbox and lables           
-               global list2
-               list2=Listbox(Win2,width=28,height=6,font=("Helvetica", 12))
-               list2.place(relx=0.8,rely=0.158,anchor=CENTER)
-               label1=ttk.Label(master=Win2,text=namesList[0],font=("Themed Label", 20),
-                              background="#EEEEE8")
-               label1.place(relx=.77,rely=0.03,anchor=CENTER)
-               label2=ttk.Label(master=Win2,text=namesList[1],font=("Themed Label", 20),
-                              background="#EEEEE8")
-               label2.grid(row=1,column=0,sticky=W,pady=4)
-               label0=ttk.Label(master=Win2,text=namesList[2],font=("Themed Label", 12),
-                              background="#EEEEE8")
-               label0.grid(row=2,column=0,sticky=W,pady=4)
-               label5=ttk.Label(master=Win2,text=namesList[3],font=("Themed Label", 12),
-                              background="#EEEEE8")
-               label5.grid(row=3,column=0,sticky=W,pady=4)
-               label6=ttk.Label(master=Win2,text=namesList[4],font=("Themed Label", 12),
-                              background="#EEEEE8")
-               label6.grid(row=4,column=0,sticky=W,pady=4)
-               label7=ttk.Label(master=Win2,text=namesList[5],font=("Themed Label", 12),
-                              background="#EEEEE8")
-               label7.grid(row=5,column=0,sticky=W,pady=4)
-               label8=ttk.Label(master=Win2,text=namesList[6],font=("Themed Label", 12),
-                              background="#EEEEE8")
-               label8.grid(row=6,column=0,sticky=W,pady=4)
-               #if statment that performs tasks based the pressed is re-stock or re-price
-               if choice==2:
-                   label9=ttk.Label(master=Win2,text='cocoa power(oz):',font=("Themed Label", 12),
-                              background="#EEEEE8")
-                   label9.grid(row=7,column=0,sticky=W,pady=4)
-                   cocoaEntry=tk.Entry(master=Win2, width=10)
-                   cocoaEntry.grid(row=7,column=1,sticky=W,pady=4)
-                   addButton = tk.Button(master=Win2,text="ADD",font="Helvetica",width="10",
-                                  height="1",fg="white",bg="SpringGreen3",command=lambda: self.addToInventory(main,regEntry.get(),expressoEntry.get(),
-                                     milkEntry.get(),sugarEntry.get(),creamEntry.get(),cocoaEntry.get()))
-                   addButton.grid(row=8,column=0,sticky=W,pady=4)
-                   for i in range(6):
-                    list2.insert(END,inventory.ViewInventory(i))
-               else:
-                   PriceButton = tk.Button(master=Win2,text="SET",font="Helvetica",width="10",
-                                  height="1",fg="white",bg="SpringGreen3",command=lambda: self.setPrice(main,regEntry.get(),expressoEntry.get(),
-                                     milkEntry.get(),sugarEntry.get(),creamEntry.get()))
-                   PriceButton.grid(row=8,column=0,sticky=W,pady=4)
-                   for i in range(5):
-                    list2.insert(END,inventory.ViewPrices(i))
-                   
-                    
+                
+                
+                #listbox with scroll bar
+                global checkout_frame
+                checkout_frame = customtkinter.CTkFrame(order_frame, fg_color="transparent")
+                checkout_frame.grid(row = 0, column=1)
+                listbox1_frame = customtkinter.CTkFrame(checkout_frame)
+                listbox1_frame.grid(row = 0, column=0, columnspan=2, pady=(0,20))
+                scroll=Scrollbar(listbox1_frame)
+                scroll.pack(side="right",fill="y")
+                global list1
+                list1=Listbox(listbox1_frame,yscrollcommand=scroll.set,width=38,height=20,font=("Helvetica", 10))
+                list1.pack()
+                scroll.config(command=list1.yview)
+
+                total_label=customtkinter.CTkLabel(master=checkout_frame,
+                                                   text='Total: ',
+                                                   font=("Helvetica", 20))
+                total_label.grid(row = 1, column=0)
+
+                #checkout button
+                checkout_button = customtkinter.CTkButton(master=checkout_frame,
+                                    text="CHECKOUT",
+                                    command=lambda: self.checkOut(main))
+                checkout_button.grid(row = 2, column = 0, columnspan=2, pady=20)
+
+                
+
+                print("order button was pressed")
+            #re-stock and set PRices function
+            elif choice==2 or choice==3:
+                #array used for  labels
+                if choice==2:
+                     namesList=['Current Inventory:',
+                                'Choose Items to re-stock:',
+                                'regular coffee beans(oz):',
+                                'expresso coffee beans(oz)',
+                                '1% milk(gal):',
+                                'suger(packet):',
+                                'non dairy creamer(packet):',
+                                'cocoa power(oz):']  
+                else:
+                     namesList=['Current Prices:',
+                                'Set Prices:',
+                                'Regular:',
+                                'Expresso:',
+                                'Latte:',
+                                'Cappuccino:',
+                                'Cocoa Latte:']      
+                
+    
+                # create frames
+                Win2.set_frame = customtkinter.CTkFrame(Win2, corner_radius=0, border_width=0, fg_color="transparent")
+                Win2.set_frame.grid(row=0, column=0,sticky='news')
+                Win2.show_frame = customtkinter.CTkFrame(Win2, corner_radius=0, border_width=0,fg_color="transparent")
+                Win2.show_frame.grid(row=0, column=1,sticky='news')
+                Win2.rowconfigure(0, weight=1)
+                Win2.columnconfigure((0,1), weight=1)
+    
+                # add widgets to set frame
+                set_label_1=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[1], font=customtkinter.CTkFont(size=20, weight="bold"))
+                set_label_1.grid(row=0, column=0, columnspan=2, pady=(50,20))
+    
+                set_label_2=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[2])
+                set_label_2.grid(row=1,column=0, pady=(0,20))
+    
+                set_label_3=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[3])
+                set_label_3.grid(row=2,column=0, pady=(0,20))
+    
+                set_label_4=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[4])
+                set_label_4.grid(row=3,column=0, pady=(0,20))
+    
+                set_label_5=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[5])
+                set_label_5.grid(row=4,column=0, pady=(0,20))
+    
+                set_label_6=customtkinter.CTkLabel(master=Win2.set_frame,text=namesList[6])
+                set_label_6.grid(row=5,column=0, pady=(0,20))
+
+                #entries
+                regEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                regEntry.grid(row=1,column=1, pady=(0,20))
+                expressoEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                expressoEntry.grid(row=2,column=1, pady=(0,20))
+                milkEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                milkEntry.grid(row=3,column=1, pady=(0,20))
+                sugarEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                sugarEntry.grid(row=4,column=1, pady=(0,20))
+                creamEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                creamEntry.grid(row=5,column=1, pady=(0,20))
+                Win2.set_frame.columnconfigure((0,1), weight=1)
+
+                # add widget to show frames
+                label1=customtkinter.CTkLabel(master=Win2.show_frame,text=namesList[0],font=customtkinter.CTkFont(size=20, weight="bold"))
+                label1.grid(row=0, column=0, sticky='news', pady=(50,20))
+                Win2.list_frame=customtkinter.CTkFrame(Win2.show_frame, fg_color="transparent", corner_radius=0, border_width=0)
+                Win2.list_frame.grid(row=1, column=0, sticky='news')
+                global list2
+                list2= Listbox(Win2.list_frame,
+                                                width=28, 
+                                                height=6,
+                                                font=("Helvetica", 12))
+                list2.pack()
+                Win2.show_frame.columnconfigure(0, weight=1)
                
-               #entries
-               regEntry=tk.Entry(master=Win2, width=10)
-               regEntry.grid(row=2,column=1,sticky=W,pady=4)
-               expressoEntry=tk.Entry(master=Win2, width=10)
-               expressoEntry.grid(row=3,column=1,sticky=W,pady=4)
-               milkEntry=tk.Entry(master=Win2, width=10)
-               milkEntry.grid(row=4,column=1,sticky=W,pady=4)
-               sugarEntry=tk.Entry(master=Win2, width=10)
-               sugarEntry.grid(row=5,column=1,sticky=W,pady=4)
-               creamEntry=tk.Entry(master=Win2, width=10)
-               creamEntry.grid(row=6,column=1,sticky=W,pady=4)
                
-               print("re-stock button was pressed")
-          elif choice==4:
-              global list3
-              #log and Statistics button
-              frame=tk.Frame(Win2)
-              frame.place(relx=0.5,rely=0.23,anchor=CENTER)
-              label1=tk.Label(master=Win2,text="LOGS:\n(An empty search returns all logs)",font=("Helvetica", 12),
-                              background="#EEEEE8")
-              label1.place(relx=.5,rely=0.035,anchor=CENTER)
-              list3=Listbox(frame,width=100,
-                            height=10,font=("Helvetica", 10))
-              list3.pack(side="left",fill="y")
-              scroll2=Scrollbar(frame,orient='vertical') 
-              scroll2.pack(side="right",fill="y")
-              list3.config(yscrollcommand=scroll2.set)
-              label2=tk.Label(master=Win2,text="STATISTICS:",font=("Helvetica", 12),
-                              background="#EEEEE8")
-              label2.place(relx=.5,rely=0.61,anchor=CENTER)
-              list4=Listbox(Win2,width=35,
-                            height=5,font=("Helvetica", 10))
-              list4.place(relx=.5,rely=0.7,anchor=CENTER)
-              searchEntry=tk.Entry(master=Win2, width=35,font=("Helvetica", 9))
-              searchEntry.place(relx=0.5,rely=0.39,anchor=CENTER)
-              searchButton = tk.Button(master=Win2,text="Search Logs",font="Helvetica",width="10"
-                    ,fg="white",bg="SpringGreen3",command=lambda: self.logSearch(searchEntry.get()))
-              searchButton.place(relx=0.5,rely=0.45,anchor=CENTER)
-              #add logs to list box
-              with open('AppData.json','r') as openfile:
-                 Database=json.load(openfile)
-              for i in Database['logs']:
-                    list3.insert(END,Database['logs'][i])
-              for i in range(5):
-                    list4.insert(END,inventory.viewStats(i))
+                #if statment that performs tasks based the pressed is re-stock or re-price
+                if choice==2:
+                    label9=customtkinter.CTkLabel(master=Win2.set_frame,
+                                                  text='cocoa power(oz):')
+                    label9.grid(row=6,column=0, pady=(0,20))
+                    cocoaEntry=customtkinter.CTkEntry(master=Win2.set_frame, width=100)
+                    cocoaEntry.grid(row=6,column=1, pady=(0,20))
+                    addButton = customtkinter.CTkButton(master=Win2.set_frame,
+                                                        text="ADD",
+                                                        command=lambda: self. addToInventory(main,
+                                                                                             regEntry.get(),
+                                                                                             expressoEntry.get(),
+                                                                                             milkEntry.get(),
+                                                                                             sugarEntry.get(),
+                                                                                             creamEntry.get(),
+                                                                                             cocoaEntry.get()))
+                    addButton.grid(row=8,column=0,columnspan=2, pady=(10,20))
+                    for i in range(6):
+                        list2.insert(END,inventory.ViewInventory(i))
+                else:
+                    PriceButton = customtkinter.CTkButton(master=Win2.set_frame,
+                                                           text="SET",
+                                                           command=lambda: self.setPrice (main,
+                                                                                          regEntry.get(),
+                                                                                          expressoEntry.get(),
+                                                                                          milkEntry.get(),
+                                                                                          sugarEntry.get(),
+                                                                                          creamEntry.get()))
+                    PriceButton.grid(row=8,column=0,columnspan=2, pady=(10,20))
+                    for i in range(5):
+                        list2.insert(END,inventory.ViewPrices(i))
+                print("re-stock button was pressed")
+            elif choice==4:
+                global list3
+                
+                # create main frame 
+                log_stat_frame = customtkinter.CTkFrame(Win2, fg_color="transparent")
+                log_stat_frame.grid(row = 0, column = 0, columnspan=2, sticky='news')
+                log_stat_frame.rowconfigure(0, weight=1)
+                log_stat_frame.columnconfigure(0, weight=1)
+
+                # create log frame
+                log_frame=customtkinter.CTkFrame(log_stat_frame, fg_color="transparent")
+                log_frame.grid(row = 0, column = 0, sticky='news')
+                log_frame.rowconfigure(0, weight=1)
+                log_frame.columnconfigure(0, weight=1)
+                log_label=customtkinter.CTkLabel(log_frame,
+                                                 text="LOGS:\n(An empty search returns all logs)",
+                                                 font = customtkinter.CTkFont(family="Helvetica",
+                                                                               size=16, 
+                                                                               weight="bold"))
+                log_label.grid(row = 0, column = 0)
+                
+                listbox3_frame = customtkinter.CTkFrame(log_frame)
+                listbox3_frame.grid(row=1, column=0)
+                list3=Listbox(listbox3_frame,width=100,
+                              height=10,font=("Helvetica", 10))
+                list3.pack(side="left",fill="y")
+                scroll2=Scrollbar(listbox3_frame,orient='vertical') 
+                scroll2.pack(side="right",fill="y")
+                list3.config(yscrollcommand=scroll2.set)
+                searchEntry=customtkinter.CTkEntry(log_frame, 
+                                                   width=400,
+                                                   font=("Helvetica", 9))
+                searchEntry.grid(row = 2, column = 0, pady=25)
+                searchButton = customtkinter.CTkButton(log_frame,
+                                                       text="Search Logs",
+                                                       command=lambda: self.logSearch(searchEntry.get()))
+                searchButton.grid(row = 3, column = 0, pady=(0,25))
+                
+                # create statistic frame
+                stat_frame=customtkinter.CTkFrame(log_stat_frame, fg_color="transparent")
+                stat_frame.grid(row = 1, column = 0, sticky='news')
+                stat_frame.rowconfigure(0, weight=1)
+                stat_frame.columnconfigure(0, weight=1)
+                
+                label2=customtkinter.CTkLabel(master=stat_frame,
+                                              text="STATISTICS:",
+                                              font = customtkinter.CTkFont(family="Helvetica",
+                                                                               size=16, 
+                                                                               weight="bold"))
+                label2.grid(row=0, column=0)
+                listbox4_frame = customtkinter.CTkFrame(stat_frame)
+                listbox4_frame.grid(row=1, column=0, pady=10)
+                list4=Listbox(listbox4_frame,width=35,
+                              height=5,font=("Helvetica", 10))
+                list4.pack()
+                
+                # add logs to list box
+                with open('AppData.json','r') as openfile:
+                   Database=json.load(openfile)
+                for i in Database['logs']:
+                      list3.insert(END,Database['logs'][i])
+                for i in range(5):
+                      list4.insert(END,inventory.viewStats(i))
 
 
           
 
-          #goes back to previous screen
-          button1 = tk.Button(master=Win2,text="BACK",font="Helvetica",
-                                 width="10",height="1",fg="white",bg="SpringGreen3",
-                                 command=lambda: self.close(2,main))
-          button1.place(relx=0.5,rely=0.95,anchor=CENTER)
+            #goes back to previous screen
+            Win2.back_button_frame = customtkinter.CTkFrame(Win2, corner_radius=0, border_width=0, fg_color="transparent")
+            Win2.back_button_frame.grid(row=1, column=0, columnspan=2, sticky='news')
+            Win2.back_button = customtkinter.CTkButton(master=Win2.back_button_frame,
+                                                text="BACK",
+                                                command=lambda: self.close(2,main))
+            Win2.back_button.grid(row=0, column=0)
+            Win2.back_button_frame.rowconfigure(0, weight=1)
+            Win2.back_button_frame.columnconfigure(0, weight=1)
+
+            Win2.rowconfigure((0,1), weight=1)
+            Win2.columnconfigure((0,1), weight=1)
+
     def logSearch(self,search):
         """displays search results"""
         x=False
@@ -285,6 +624,7 @@ class App(tk.Tk):
         """Closes certain windows"""
         if(choice==1):
           Win1.destroy()
+          self.deiconify()
 
         else:
             Win2.destroy()
@@ -297,7 +637,6 @@ class App(tk.Tk):
        #sizes window depending on the button pressed
        
        global Win1
-       
        global dataBase
        #opens dataBase
        with open('AppData.json','r') as openfile:
@@ -305,85 +644,121 @@ class App(tk.Tk):
        dataBase=read
        if(choice==2):
           #creates window
-          Win1=tk.Toplevel(MainWin)
+          #Win1=tk.Toplevel(MainWin)
+          Win1= customtkinter.CTkToplevel(MainWin)
+          Win1.attributes("-topmost", True)
           Win1.title("Warrior Cafe")
           Win1.geometry("400x600")
-          Win1.configure(bg="#EEEEE8")
-          label1=tk.Label(master=Win1,text='Sign Up',font=("Helvetica", 20),
-                            background="#EEEEE8")
+          
+          label0=customtkinter.CTkLabel(master=Win1,
+                                        text='Sign Up',
+                                        font=("Helvetica", 20))
           #opens new window when sign up button is pressed
          
-          label0=tk.Label(master=Win1,text='Passwords most be greater than six characters,\n and first and last names must only have alphabet characters.',
-                          font=("Helvetica", 9),background="#EEEEE8")
-          userEntry=tk.Entry(master=Win1, width=34)
-          firstEntry=tk.Entry(master=Win1, width=34)
-          lastEntry=tk.Entry(master=Win1, width=34)
-          passEntry=tk.Entry(master=Win1, width=34,show="*")
-          label2=ttk.Label(master=Win1,text='User Name',font=("Themed Label", 9),
-                              background="#EEEEE8")
-          label3=ttk.Label(master=Win1,text='First Name',font=("Themed Label", 9),
-                              background="#EEEEE8")
-          label4=ttk.Label(master=Win1,text='Last Name',font=("Themed Label", 9),
-                              background="#EEEEE8")
-          label5=ttk.Label(master=Win1,text='Password',font=("Themed Label", 9),
-                              background="#EEEEE8")
-          button1 = tk.Button(master=Win1,text="Register",font="Helvetica",width="10",
-                                 height="2",fg="white",bg="SpringGreen3",command=lambda: self.register(userEntry.get(),
+          label1=customtkinter.CTkLabel(master=Win1,
+                                        text='Passwords most be greater than six characters,\n and first and last names must only have alphabet characters.',
+                                        font=("Helvetica", 14))
+          userEntry=customtkinter.CTkEntry(master=Win1, width=200)
+          firstEntry=customtkinter.CTkEntry(master=Win1, width=200)
+          lastEntry=customtkinter.CTkEntry(master=Win1, width=200)
+          passEntry=customtkinter.CTkEntry(master=Win1, width=200,show="*")
+          label2=customtkinter.CTkLabel(master=Win1,text='Username')
+          label3=customtkinter.CTkLabel(master=Win1,text='First Name')
+          label4=customtkinter.CTkLabel(master=Win1,text='Last Name')
+          label5=customtkinter.CTkLabel(master=Win1,text='Password')
+          button1 = customtkinter.CTkButton(master=Win1,
+                                            text="Register",
+                                            command=lambda: self.register(userEntry.get(),
                                  firstEntry.get(),lastEntry.get(),passEntry.get()))
           
           firstEntry.get()
           #place entries and label to screen
-          label0.place(relx=0.5,rely=0.17,anchor=CENTER)
-          label1.place(relx=0.5,rely=0.1,anchor=CENTER)
-          label2.place(relx=0.5,rely=0.265,anchor=CENTER)
-          label3.place(relx=0.5,rely=0.365,anchor=CENTER)
-          label4.place(relx=0.5,rely=0.465,anchor=CENTER)
-          label5.place(relx=0.5,rely=0.565,anchor=CENTER)
-          userEntry.place(relx=0.5,rely=0.3,anchor=CENTER)
-          firstEntry.place(relx=0.5,rely=0.4,anchor=CENTER)
-          lastEntry.place(relx=0.5,rely=0.5,anchor=CENTER)
-          passEntry.place(relx=0.5,rely=0.6,anchor=CENTER)
-          button1.place(relx=0.5,rely=0.7,anchor=CENTER)
+          label0.place(relx=0.5,rely=0.1,anchor="center")
+          label1.place(relx=0.5,rely=0.17,anchor="center")
+          label2.place(relx=0.5,rely=0.3,anchor="center")
+          label3.place(relx=0.5,rely=0.4,anchor="center")
+          label4.place(relx=0.5,rely=0.5,anchor="center")
+          label5.place(relx=0.5,rely=0.6,anchor="center")
+          userEntry.place(relx=0.5,rely=0.35,anchor="center")
+          firstEntry.place(relx=0.5,rely=0.45,anchor="center")
+          lastEntry.place(relx=0.5,rely=0.55,anchor="center")
+          passEntry.place(relx=0.5,rely=0.65,anchor="center")
+          button1.place(relx=0.5,rely=0.75,anchor="center")
           
        elif choice==1:
-           #logs ins in user
-           global username1
-           username1=entry1.get()
-           
-           password=entry2.get()
-           #menu after login  
-           if(loginChecks.checkLogin(username1,password,log)):
-            Win1=tk.Toplevel(MainWin)
-            Win1.title("Warrior Cafe")
-            Win1.geometry("800x600")
-            Win1.configure(bg="#EEEEE8")
-            self.logo1=ImageTk.PhotoImage(Image.open("logo1.png").resize((500,180)))
-            label6=Label(master=Win1,image=self.logo1,background="#EEEEE8")
-            label6.place(relx=0.5,rely=0.1,anchor=CENTER)
-            #prints the users name 
-            label7=tk.Label(master=Win1,text='WELCOME BACK '+(dataBase['usernames'][username1.lower()][0]).upper(),font=("Helvetica", 14),
-                        background="#EEEEE8")
-            
-            #Sub menu
-            button2 = tk.Button(master=Win1,text="Order",font="Helvetica",
-                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,1,TakeOrders.copyData()))
-            button3= tk.Button(master=Win1,text="Re-stock",font="Helvetica",
-                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,2,0))
-            button4 = tk.Button(master=Win1,text="Logs &\n Statistics",font="Helvetica",
-                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,4,0))
-            button5 = tk.Button(master=Win1,text="Set Prices",font="Helvetica",
-                                 width="15",height="2",fg="white",bg="SpringGreen3",command=lambda: self.newWindow(MainWin,3,0))
-            button6 = tk.Button(master=Win1,text="Log out",font="Helvetica",
-                                 width="10",height="1",fg="white",bg="SpringGreen3",command=lambda: self.close(1,MainWin))
-            button2.place(relx=0.35,rely=0.5,anchor=CENTER)
-            button3.place(relx=0.65,rely=0.5,anchor=CENTER)
-            button4.place(relx=0.35,rely=0.7,anchor=CENTER)
-            button5.place(relx=0.65,rely=0.7,anchor=CENTER)
-            button6.place(relx=0.5,rely=0.96,anchor=CENTER)
-            label7.place(relx=0.5,rely=0.3,anchor=CENTER)
+            #logs ins in user
+            global username1
+            username1=self.username_entry.get()
+            password=self.password_entry.get()
+            #menu after login  
+            if(loginChecks.checkLogin(username1,password,log)):
+                
+                Win1=customtkinter.CTkToplevel(MainWin)
+                Win1.title("Warrior Cafe")
+                Win1.geometry("800x600")
+                Win1.attributes("-topmost", True)
+                # create main frame
+                Win1.main_frame = customtkinter.CTkFrame(Win1, 
+                                                  corner_radius=0)
+                Win1.main_frame.grid(row = 0, column = 0, sticky='news')
+                Win1.rowconfigure(0, weight=1)
+                Win1.columnconfigure(0, weight=1)
+                # create logo frame
+                Win1.logo_frame = customtkinter.CTkFrame(Win1.main_frame,
+                                                 corner_radius=0,
+                                                 height=180,
+                                                 fg_color='#858585')
+                Win1.logo_frame.grid(row = 0, column = 0, columnspan=2, sticky='news')
+                Win1.main_frame.columnconfigure((0,1), weight=1)
+                Win1.main_frame.rowconfigure((1,2,3,4), weight=1)
+
+                # add image to logo frame
+                Win1.logo_label = customtkinter.CTkLabel(Win1.logo_frame, 
+                                                 text='', 
+                                                 image=self.logo_image)
+                Win1.logo_label.pack()
+                
+                #prints the users name 
+                label7= customtkinter.CTkLabel(master=Win1.main_frame,
+                                               text='WELCOME BACK '+(dataBase['usernames'][username1.lower()][0]).upper(),
+                                               font=customtkinter.CTkFont(size=20, weight="bold"))
+                label7.grid(row = 1, column = 0, columnspan=2)
+
+                #Sub menu
+                button2 = customtkinter.CTkButton(master=Win1.main_frame,
+                                                  text="Order",
+                                                  height=50,
+                                                  font=customtkinter.CTkFont(size=16, weight="bold"),
+                                                  command=lambda: self.newWindow(MainWin,1,TakeOrders.copyData()))
+                button3= customtkinter.CTkButton(master=Win1.main_frame,
+                                                 text="Restock",
+                                                 height=50,
+                                                 font=customtkinter.CTkFont(size=16, weight="bold"),
+                                                 command=lambda: self.newWindow(MainWin,2,0))
+                button4 = customtkinter.CTkButton(master=Win1.main_frame,
+                                                  text="Logs &\n Statistics",
+                                                  height=50,
+                                                  font=customtkinter.CTkFont(size=16, weight="bold"),
+                                                  command=lambda: self.newWindow(MainWin,4,0))
+                button5 = customtkinter.CTkButton(master=Win1.main_frame,
+                                                  text="Set Prices",
+                                                  height=50,
+                                                  font=customtkinter.CTkFont(size=16, weight="bold"),
+                                                  command=lambda: self.newWindow(MainWin,3,0))
+                button6 = customtkinter.CTkButton(master=Win1.main_frame,
+                                                  text="Log out",
+                                                  font=customtkinter.CTkFont(size=16, weight="bold"),
+                                                  command=lambda: self.close(1,MainWin))
+                
+                button2.grid(row=2, column=0, sticky='e', padx = 30)
+                button3.grid(row=2, column=1, sticky='w', padx = 30)
+                button4.grid(row=3, column=0, sticky='e', padx = 30)
+                button5.grid(row=3, column=1, sticky='w', padx = 30)
+                button6.grid(row=4, column=0, columnspan=2)
+                
            
               
-           else:
+            else:
                messagebox.showerror(message="invalid username or Password")
                
     def register(self,user,first,last,password):
@@ -397,8 +772,9 @@ class App(tk.Tk):
             Win1.destroy()
         else:
             messagebox.showerror(parent=Win1,message=message[x-1])
-
+    
 if __name__ == "__main__":
+    customtkinter.set_default_color_theme("green")
     app = App()
     app.mainloop()
     
