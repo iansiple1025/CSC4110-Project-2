@@ -1,36 +1,49 @@
 import json
 from datetime import datetime
 
+def isfloat(num):
+       try:
+           float(num)
+           
+           return True
+       except ValueError:
+           return False
 class inventory:
+ 
+           
    def reStock(reg,expr,milk,sugar,creamer,coca,username):
         
         cost=0
         time= datetime.now()
+        
         time = time.strftime("%H:%M:%S, %m/%d/%Y")
         with open('AppData.json','r') as openfile:
             Database=json.load(openfile)
         regPrice=0.11; exprPrice=.14;milkPrice=4.36;sugarPrice=0.19; creamerPrice=0.08;cocaPrice=0.56
-        if(reg!="" and reg.isdigit()):
+        if(reg!="" and isfloat(reg)):
             cost+=float(reg)*regPrice
             Database['regular']+=float(reg)
-        if(expr!="" and expr.isdigit()):
+        if(expr!="" and isfloat(expr)):
             cost+=float(expr)*exprPrice
             Database['expresso']+=float(expr)
-        if(milk!="" and milk.isdigit()):
+        if(milk!="" and isfloat(milk)):
             cost+=float(milk)*milkPrice
             Database['milk']+=float(milk)
-        if(sugar!="" and sugar.isdigit()):
+        if(sugar!="" and isfloat(sugar)):
             cost+=float(sugar)*sugarPrice
             Database['sugar']+=int(sugar)
-        if(creamer!="" and creamer.isdigit()):
+        if(creamer!="" and isfloat(creamer)):
             cost+=int(creamer)*creamerPrice
             Database['creamer']+=int(creamer)
-        if(coca!="" and coca.isdigit()):
+        if(coca!="" and isfloat(coca)):
             cost+=float(coca)*cocaPrice
             Database['cocoa']+=float(coca)
-            Database['cost']+=cost
-        cost="{:.2f}".format(float(cost))
-        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username][0])\
+            
+        Database['cost']+=cost
+        
+    
+        
+        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username.lower()][0])\
          +", Re-stock completed total= "+str(cost)+"$"+" at "+str(time)
         
         Database['logs'][Database['orderID']]=log
@@ -91,20 +104,20 @@ class inventory:
         with open('AppData.json','r') as openfile:
             Database=json.load(openfile)
         regPrice=0.11; exprPrice=.14;milkPrice=4.36;sugarPrice=0.19; creamerPrice=0.08;cocaPrice=0.56
-        if(reg!="" and reg.isdigit()):
+        if(reg!="" and isfloat(reg)):
             Database["prices"]['regular']=float(reg)
-        if(expr!="" and expr.isdigit()):
+        if(expr!="" and isfloat(expr)):
             Database["prices"]['expresso']=float(expr)
-        if(latte!="" and latte.isdigit()):
+        if(latte!="" and isfloat(latte)):
             Database["prices"]['latte']=float(latte)
-        if(capa!="" and capa.isdigit()):
+        if(capa!="" and isfloat(capa)):
             Database["prices"]['cappa']=float(capa)
             
-        if(cocoa!="" and cocoa.isdigit()):
+        if(cocoa!="" and isfloat(cocoa)):
             Database["prices"]['cocoaLatte']=float(cocoa)
         
             
-        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username][0])\
+        log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username.lower()][0])\
          +", re-pricing completed at "+str(time)
         Database['logs'][Database['orderID']]=log
         Database['orderID']+=1
@@ -138,8 +151,3 @@ class inventory:
             elif choice==4:
                     return "Gross Margin: "+str(margin)+"%"
                 
-
-       
-      
-       
-        
