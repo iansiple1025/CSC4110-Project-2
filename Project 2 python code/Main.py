@@ -260,7 +260,7 @@ class App(customtkinter.CTk):
             
             str=""
             total=""
-            drinks=["Regular","Expresso","Latte","Cappuccino","Cocoa latte"]
+            drinks=["Regular","Espresso","Latte","Cappuccino","Cocoa latte"]
             x=TakeOrders.order(choice)
             
             if x==False:
@@ -268,6 +268,7 @@ class App(customtkinter.CTk):
             else:
                 str="{:.2f}".format(x[0])
                 total="{:.2f}".format(x[1])
+                global totalLabel
                 
                 totalLabel=customtkinter.CTkLabel(master= checkout_frame,
                                                   text=total+"$",
@@ -283,15 +284,21 @@ class App(customtkinter.CTk):
         if ch=='yes':
             id=TakeOrders.checkOut(username1)
             messagebox.showinfo(parent=Win2,message="Transaction complete oderID: "+str(id))
-            self.close(2,main)
-            self.newWindow(main,1,TakeOrders.copyData())
+            list1.delete(0,END)
+            TakeOrders.copyData()
+            totalLabel.grid_forget()
+            totalLabel1=customtkinter.CTkLabel(master= checkout_frame,
+                                                  text="                          ",
+                                                font=("Helvetica", 20))
+            totalLabel1.grid(row = 1, column = 1)
+            
             
                       
                 
     def newWindow(self,main,choice,copy):
             """"performs all the functions of the application"""
             global Win2
-          
+            
             Win2=customtkinter.CTkToplevel(main)
             Win2.title("Warrior Cafe")
             Win2.geometry("800x600")
@@ -301,6 +308,7 @@ class App(customtkinter.CTk):
             #order button
             if choice==1:
                 # load images
+                
                 self.image1=customtkinter.CTkImage(Image.open("reg.jpg"), size=(100,100))
                 self.image2=customtkinter.CTkImage(Image.open("expresso.jpg"), size=(100,100))
                 self.image3=customtkinter.CTkImage(Image.open("latte.jpg"), size=(100,100))
@@ -399,7 +407,7 @@ class App(customtkinter.CTk):
                      namesList=['Current Inventory:',
                                 'Choose Items to re-stock:',
                                 'regular coffee beans(oz):',
-                                'expresso coffee beans(oz)',
+                                'espresso coffee beans(oz)',
                                 '1% milk(gal):',
                                 'suger(packet):',
                                 'non dairy creamer(packet):',
@@ -408,7 +416,7 @@ class App(customtkinter.CTk):
                      namesList=['Current Prices:',
                                 'Set Prices:',
                                 'Regular:',
-                                'Expresso:',
+                                'Espresso:',
                                 'Latte:',
                                 'Cappuccino:',
                                 'Cocoa Latte:']      
@@ -608,8 +616,10 @@ class App(customtkinter.CTk):
             
             cost="{:.2f}".format(float(cost))
             messagebox.showinfo(parent=Win2,message="Transaction complete. Total= "+ cost+"$")
-            self.close(2,main)
-            self.newWindow(main,2,0)
+            list2.delete(0,END)
+            for i in range(6):
+                        list2.insert(END,inventory.ViewInventory(i))
+            
     def setPrice(self,main,reg,expr,latte,capa,cocoa):
         """Set menu prices after add button is pressed"""
         ch=messagebox.askquestion("Inventory","Are you sure you want to add these items\n to the inventory",parent=Win2)
@@ -617,8 +627,9 @@ class App(customtkinter.CTk):
         if ch=='yes':
             inventory.setPrice(reg,expr,latte,capa,cocoa,username1)
             messagebox.showinfo(parent=Win2,message="Transaction complete")
-            self.close(2,main)
-            self.newWindow(main,3,0)
+            list2.delete(0,END)
+            for i in range(5):
+                        list2.insert(END,inventory.ViewPrices(i))
 
     def close(self,choice,main):
         """Closes certain windows"""

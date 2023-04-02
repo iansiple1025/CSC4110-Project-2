@@ -57,7 +57,7 @@ class loginChecks:
             
          elif last.isalpha()==False:
             check=3    
-         elif len(password)<=6:
+         elif len(password)<6:
             check=4
          
          if check==0:

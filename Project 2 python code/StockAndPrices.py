@@ -42,7 +42,7 @@ class inventory:
         Database['cost']+=cost
         
     
-        
+        cost="{:.2f}".format(float(cost))
         log="Transaction #: "+str(Database['orderID'])+", Employee: "+str(Database['usernames'][username.lower()][0])\
          +", Re-stock completed total= "+str(cost)+"$"+" at "+str(time)
         
@@ -127,7 +127,7 @@ class inventory:
 
         
    def viewStats(choice):
-            drinks=["regular","expresso","latte","cappuccino","cocoa latte"]
+            drinks=["regular","espresso","latte","cappuccino","cocoa latte"]
             with open('AppData.json','r') as openfile:
              Database=json.load(openfile)
             rev="{:.2f}".format(float(Database['revenue']))
@@ -142,7 +142,7 @@ class inventory:
             if choice==0:
                 return "Hot Seller: "+str(drinks[index])
             elif choice==1:  
-                return "Renvenue: "+str(rev)+"$"
+                return "Revenue: "+str(rev)+"$"
             
             elif choice==2:       
                     return "Cost: "+str(cost)+"$"

@@ -44,7 +44,7 @@ class TakeOrders:
                       Data['current'][0]+=Data['prices']['expresso']
                       total.append(Data['prices']['expresso'])
                       total.append(Data['current'][0])
-                      Data['current'][1]+="expresso "
+                      Data['current'][1]+="espresso "
                       Data['hotSeller'][1]+=1
                       with open("CopyAppData.json","w") as out:
                          json.dump(Data,out)
