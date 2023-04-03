@@ -7,6 +7,7 @@ from PIL import Image,ImageTk
 from logCheckSign import loginChecks
 from TakeOrder import TakeOrders
 from StockAndPrices import inventory
+import random
 
 class App(customtkinter.CTk):
     WIDTH = 1000
@@ -23,7 +24,6 @@ class App(customtkinter.CTk):
         self.title("Warrior Cafe")
         self.geometry(f"{self.WIDTH}x{self.HEIGHT}")
         self.resizable(1,1)
-
 
         '''
         ============= LOAD IMAGES =============
@@ -44,7 +44,7 @@ class App(customtkinter.CTk):
         
         
         '''
-        ============= CREATE MAIN FRAMES =============
+        #============= CREATE MAIN FRAMES =============
         '''
 
         # create login frame
@@ -87,7 +87,7 @@ class App(customtkinter.CTk):
 
 
         '''
-        ============= ADD WIDGETS TO FRAMES =============
+        #============= ADD WIDGETS TO FRAMES =============
         '''
         # add image to logo frame
         self.logo_label = customtkinter.CTkLabel(self.logo_frame, 
@@ -141,7 +141,7 @@ class App(customtkinter.CTk):
         
         
         '''
-        ============= LOGIN PAGE =============
+        #============= LOGIN PAGE =============
         '''
 
         # create login frame
@@ -163,7 +163,7 @@ class App(customtkinter.CTk):
         self.signup_button.grid(row=4, column=0, padx=30, pady=(0, 15))
         
         '''
-        ============= SETTING PAGE =============
+        #============= SETTING PAGE =============
         '''
         # language
         self.language_label = customtkinter.CTkLabel(self.setting_frame, 
@@ -202,7 +202,7 @@ class App(customtkinter.CTk):
 
 
         '''
-        ============= GRID CONFIGURE =============
+        #============= GRID CONFIGURE =============
         '''
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -215,13 +215,11 @@ class App(customtkinter.CTk):
         self.setting_frame.columnconfigure((0,1), weight=1)
         self.setting_frame.grid_columnconfigure((0,1), weight=1)
         '''
-        ============= SET DEFAULT VALUES =============
+        #============= SET DEFAULT VALUES =============
         '''
         self.select_frame_by_name("dashboard")
         self.scaling_optionemenu.set("100%")
         self.theme_optionemenu.set("Dark")
-        
-
         
     '''
     ============= METHODS =============
@@ -602,10 +600,6 @@ class App(customtkinter.CTk):
         if x==False:
             messagebox.showwarning(parent=Win2,message="Search failed.\nCould not find a match for: "+str(search))
 
-
-
-
-
     def addToInventory(self,main,reg,expr,milk,sugar,cream,cocoa):
         """Add button: ingredients to inventory and displays the updated inventory """
         ch=messagebox.askquestion("Inventory","Are your sure you want to add these items\n to the inventory",parent=Win2)
@@ -784,9 +778,18 @@ class App(customtkinter.CTk):
         else:
             messagebox.showerror(parent=Win1,message=message[x-1])
     
+    def simulation_mode(self):
+         for i in range(random.randint(100,650)):
+            for i in range(random.randint(1,7)):
+                self.addItems(random.randint(1,5))
+            
+            
+
+         
 if __name__ == "__main__":
     customtkinter.set_default_color_theme("green")
     app = App()
-    app.mainloop()
+    #app.mainloop()
+    app.simulation_mode()
     
     

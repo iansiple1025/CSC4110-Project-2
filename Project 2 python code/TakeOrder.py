@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 
-
 class TakeOrders:
  def copyData():
          with open('AppData.json','r') as openfile:
@@ -19,7 +18,6 @@ class TakeOrders:
           with open('CopyAppData.json','r') as openfile:
                 Data=json.load(openfile)
           if choice==1:
-                
                 if Data["regular"]-0.38>=0 and Data['sugar']-3>=0 and Data['creamer']-2>=0:
                       Data["regular"]-=0.38
                       Data['sugar']-=3
